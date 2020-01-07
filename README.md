@@ -77,3 +77,7 @@ For the boot manager, [rEFInd](http://www.rodsbooks.com/refind/) is used, with a
 ## Desktop Background
 
 First, the [Dynamic Wallpaper](https://store.kde.org/p/1295389/) KDE plugin is installed. Then, a ported version of the macOS Catalina desktop background is used.
+
+## Additional Software
+
+- For a text editor/IDE, VSCode is used, with a special build to enable transparency ([`code-transparent`](https://aur.archlinux.org/packages/code-transparent/))
