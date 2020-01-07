@@ -77,3 +77,14 @@ For the boot manager, [rEFInd](http://www.rodsbooks.com/refind/) is used, with a
 ## Desktop Background
 
 First, the [Dynamic Wallpaper](https://store.kde.org/p/1295389/) KDE plugin is installed. Then, a ported version of the macOS Catalina desktop background is used.
+
+## Additional Notes
+
+### Programs
+
+- I use [Konsole](https://konsole.kde.org/) for my terminal emulator, with ZSH as the interpreter and [Polyglot](https://github.com/agkozak/polyglot) as the prompt theme
+- I use [Dolphin](https://kde.org/applications/system/org.kde.dolphin) as my file manager GUI
+- I use [Mailspring](https://getmailspring.com/) as my desktop email client
+- I use [`code-transparent`](https://aur.archlinux.org/packages/code-transparent/), an open source build of [Visual Studio Code](https://code.visualstudio.com/) that supports desktop transparency
+  - This transparency is enabled via [this tutorial](https://userbase.kde.org/Tutorials/Force_Transparency_And_Blur): specifically, the kwin script [force blur](https://store.kde.org/p/1294604/) is used to enable this effect
+  - The color theme is in the repo
