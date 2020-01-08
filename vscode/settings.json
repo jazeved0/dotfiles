@@ -306,7 +306,7 @@
         "gitDecoration.deletedResourceForeground": "#fc618d",
         "gitDecoration.untrackedResourceForeground": "#fd9353",
         "gitDecoration.ignoredResourceForeground": "#525053",
-        "gitDecoration.conflictingResourceForeground": "#fd9353",
+        "gitDecoration.conflictingResourceForeground": "#fd9353"
     },
     "material-icon-theme.folders.theme": "specific",
     "material-icon-theme.folders.color": "#42a5f5"
