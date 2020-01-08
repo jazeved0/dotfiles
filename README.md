@@ -1,4 +1,4 @@
-# ![dotfiles](./logo.png)
+# ![dotfiles](https://i.imgur.com/h1rQo3p.png)
 
 > These dotfiles/installation instructions are used to configure a development system that emulates macOS dark theme.
 
