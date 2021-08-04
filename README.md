@@ -1,5 +1,7 @@
 # ![dotfiles](https://i.imgur.com/h1rQo3p.png)
 
+This README is outdated. See guide.md
+
 > These dotfiles/installation instructions are used to configure a development system that emulates macOS dark theme.
 
 [![screenshot 1](https://i.imgur.com/0a5ftKo.png)](https://imgur.com/a/ND80G4y)
