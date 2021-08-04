@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 DOTFILES="$(dirname "$(dirname "$(readlink -fm "$0")")")"
@@ -6,7 +7,7 @@ DOTFILES="$(dirname "$(dirname "$(readlink -fm "$0")")")"
 # Usage:
 #   sed_with_preview [file_path] [options] [pattern]
 function sed_with_preview {
-  sed "${@:2}" "$1" | diff "$1" -
+  sed "${@:2}" "$1" | diff "$1" - || true
   sed -i "${@:2}" "$1"
 }
 
@@ -29,7 +30,7 @@ function set_wallpaper {
 var Desktops = desktops();
 for (i=0;i<Desktops.length;i++) {
   d = Desktops[i];
-  d.wallpaperPlugin = "org.kde.image";
+  d.wallpaperPlugin = "'$1'";
   d.currentConfigGroup = Array("Wallpaper",
                                "'$1'",
                                "General");
@@ -177,9 +178,32 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   plasma-wallpaper-dynamic
 mkdir -p $HOME/wallpaper
 cp $DOTFILES/resources/wallpaper/monterey-dark.jpg $HOME/wallpaper/monterey-dark.jpg
-wget https://jazev-static-files.s3.amazonaws.com/catalina-dynamic.heic -P $HOME/wallpaper
-if [ "$TESTVAR" == "STATIC" ]
+function download_catalina_dynamic {
+  dynamic_wallpaper_location="$HOME/wallpaper/catalina-dynamic.heic"
+  if [[ -f "$dynamic_wallpaper_location" ]]; then
+    sha1_exit_code=0
+    echo "24f27be9561c06354463e0d3d2f72e65246dbdf4 $dynamic_wallpaper_location" \
+      | sha1sum -c - --quiet > /dev/null 2>&1 \
+      || sha1_exit_code=$?
+    if [ $sha1_exit_code -eq 0 ]; then
+      return
+    fi
+  fi
+  wget https://jazev-static-files.s3.amazonaws.com/catalina-dynamic.heic -P $HOME/wallpaper
+}
+if [ ! -z ${WALLPAPER_TYPE+x} ] && [ "$WALLPAPER_TYPE" == "STATIC" ]; then
   set_wallpaper "org.kde.image"           $HOME/wallpaper/monterey-dark.jpg
 else
+  download_catalina_dynamic
   set_wallpaper "com.github.zzag.dynamic" $HOME/wallpaper/catalina-dynamic.heic
 fi
+
+# Install oh-my-zsh
+sub_stage "Installing oh-my-zsh"
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+  zsh
+sudo chsh -s $(which zsh) $USER
+if [[ -f "/home/jazev/.oh-my-zsh" ]]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+sed_with_preview $HOME/.zshrc -E 's/ZSH_THEME="[^"]*"/ZSH_THEME="bira"/g'

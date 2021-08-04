@@ -58,7 +58,8 @@ code ~/.ssh/id/ed25519.pub
 Run the following commands to open the relevant files in VS Code:
 
 ```sh
-sed "s/jazev/$USER/g" $HOME/dev/dotfiles/resources/config/user-places.snippet.xbel > /tmp/dotfiles-install-user-places.snippet.xbel
+sed "s/jazev/$USER/g" $HOME/dev/dotfiles/resources/config/user-places.snippet.xbel \
+  > /tmp/dotfiles-install-user-places.snippet.xbel
 code $HOME/.local/share/user-places.xbel
 code /tmp/dotfiles-install-user-places.snippet.xbel
 ```
@@ -82,7 +83,6 @@ From here, modify the following settings on the default dock:
 #### TODO
 
 - Add actual instructions to Docks, configure to look good and include all third party widgets
-- Move icons & cursors to system-wide installation paths so that they appear in login screen
 - Add actual L&F using Kvantum/theme
 - Add window decorators/borders/rounded corners
   - Do I still need to fork that rounded corner application? Because I will
