@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created using Karbon, part of Calligra: http://www.calligra.org/karbon -->
+
+<svg
+   width="35.2pt"
+   height="35.2pt"
+   version="1.1"
+   id="svg6"
+   sodipodi:docname="busy02.svg"
+   inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#242424"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="pt"
+     showgrid="false"
+     inkscape:zoom="9.2151985"
+     inkscape:cx="12.045318"
+     inkscape:cy="38.903123"
+     inkscape:window-width="1872"
+     inkscape:window-height="1050"
+     inkscape:window-x="48"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6" />
+  <defs
+     id="defs2" />
+  <path
+     id="shape0"
+     d="M 42,23.5 C 41.2,23.5 40.5,22.8 40.5,22 40.5,11.8 32.2,3.5 22,3.5 21.2,3.5 20.5,2.8 20.5,2 c 0,-0.8 0.7,-1.5 1.5,-1.5 11.9,0 21.5,9.6 21.5,21.5 0,0.8 -0.7,1.5 -1.5,1.5 z m -20,20 C 10.1,43.5 0.5,33.9 0.5,22 c 0,-0.8 0.7,-1.5 1.5,-1.5 0.8,0 1.5,0.7 1.5,1.5 0,10.2 8.3,18.5 18.5,18.5 0.8,0 1.5,0.7 1.5,1.5 0,0.8 -0.7,1.5 -1.5,1.5 z"
+     style="fill:#ffffff" />
+</svg>
