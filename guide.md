@@ -40,7 +40,7 @@ Turn on Settings Sync via GitHub.
 ### 5. Set up SSH
 
 ```sh
-EMAIL=todo
+EMAIL=joseph.az@gatech.edu
 ssh-keygen -t ed25519 -C "$EMAIL"
 ```
 
@@ -82,14 +82,13 @@ From here, modify the following settings on the default dock:
 
 #### TODO
 
+- Figure out how to get rid of dumb blue + corner + shadow situation
+- Fix launcher shortcuts
+- Fix launcher icon resolutions
+- Add some specific icon overrides
+- Add config for task switcher/virtual desktops
 - Add actual instructions to Docks, configure to look good and include all third party widgets
-- Add actual L&F using Kvantum/theme
-- Add window decorators/borders/rounded corners
-  - Do I still need to fork that rounded corner application? Because I will
-  - Add kwin overrides for pretty colors
 - Add login screen theming/KDE loading screen theming
  - Include syncing settings
 - Add konsole configuration
-- Add custom prompt
 - Add various development toolchains
-- Investigate icons/pinned launchers resetting on reboot

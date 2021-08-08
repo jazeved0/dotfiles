@@ -48,7 +48,8 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   htop \
   python3-pip \
   build-essential \
-  neofetch
+  neofetch \
+  dolphin-plugins
 python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 
@@ -84,16 +85,16 @@ sudo cp \
   $DOTFILES/resources/fonts/san-francisco/*.otf \
   /usr/local/share/fonts/san-francisco
 fc-cache -f -v > /dev/null
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "font" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "fixed" "Ligalex Mono,10,-1,5,57,0,0,0,0,0,Medium"
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "menuFont" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "font"                 "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "fixed"                "Ligalex Mono,10,-1,5,57,0,0,0,0,0,Medium"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "menuFont"             "SF Pro Text,10,-1,5,50,0,0,0,0,0"
 kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "smallestReadableFont" "SF Pro Text,8,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "toolBarFont" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "WM"      --key "activeFont" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "font" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "menuFont" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "toolBarFont"          "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "WM"      --key "activeFont"           "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "font"                 "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "menuFont"             "SF Pro Text,10,-1,5,50,0,0,0,0,0"
 kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "smallestReadableFont" "SF Pro Text,8,-1,5,50,0,0,0,0,0"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "toolBarFont" "SF Pro Text,10,-1,5,50,0,0,0,0,0"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "toolBarFont"          "SF Pro Text,10,-1,5,50,0,0,0,0,0"
 sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Gtk\/FontName "[^"]*"/Gtk\/FontName "SF Pro Text,  10"/g'
 sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-font-name=.*/gtk-font-name=SF Pro Text,  10/g'
 sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-font-name=.*/gtk-font-name=SF Pro Text,  10/g'
@@ -130,7 +131,7 @@ fi
 if ! command -v code &> /dev/null
 then
   sub_stage "Installing VS Code"
-  sudo apt install gnome-keyring
+  sudo apt-get install gnome-keyring
   sudo snap install --classic code
 fi
 
@@ -163,14 +164,20 @@ rm -rf $HOME/Videos
 
 # Install Icons
 sub_stage "Installing Icons"
-sudo mkdir -p /usr/share/icons
-sudo cp -r $DOTFILES/resources/icons/personal-icons /usr/share/icons/personal-icons
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "Icons" --key "Theme" "personal-icons"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "Icons" --key "Theme" "personal-icons"
-sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Net\/IconThemeName "[^"]*"/Net\/IconThemeName "personal-icons"/g'
-sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=personal-icons/g'
-sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=personal-icons/g'
-sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-icon-theme-name="[^"]*"/gtk-icon-theme-name="personal-icons"/g'
+if [ ! -d "$HOME/opt/big-sur-icon-theme" ]; then
+  mkdir -p $HOME/opt/big-sur-icon-theme
+  git clone https://github.com/yeyushengfan258/BigSur-icon-theme.git $HOME/opt/big-sur-icon-theme
+fi
+if [ ! -d "/usr/share/icons/BigSur-dark" ]; then
+  sudo mkdir -p /usr/share/icons
+  sudo $HOME/opt/big-sur-icon-theme/install.sh --name "BigSur"
+fi
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "Icons" --key "Theme" "BigSur-dark"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "Icons" --key "Theme" "BigSur-dark"
+sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Net\/IconThemeName "[^"]*"/Net\/IconThemeName "BigSur-dark"/g'
+sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=BigSur-dark/g'
+sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=BigSur-dark/g'
+sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-icon-theme-name="[^"]*"/gtk-icon-theme-name="BigSur-dark"/g'
 
 # Install Wallpaper
 sub_stage "Installing Wallpaper"
@@ -191,12 +198,14 @@ function download_catalina_dynamic {
   fi
   wget https://jazev-static-files.s3.amazonaws.com/catalina-dynamic.heic -P $HOME/wallpaper
 }
-if [ ! -z ${WALLPAPER_TYPE+x} ] && [ "$WALLPAPER_TYPE" == "STATIC" ]; then
-  set_wallpaper "org.kde.image"           $HOME/wallpaper/monterey-dark.jpg
-else
-  download_catalina_dynamic
+download_catalina_dynamic
+if [ ! -z ${WALLPAPER_TYPE+x} ] && [ "$WALLPAPER_TYPE" == "DYNAMIC" ]; then
   set_wallpaper "com.github.zzag.dynamic" $HOME/wallpaper/catalina-dynamic.heic
+else
+  set_wallpaper "org.kde.image"           $HOME/wallpaper/monterey-dark.jpg
 fi
+kquitapp5 plasmashell
+kstart5 plasmashell <&- >&- 2>&- & disown
 
 # Install oh-my-zsh
 sub_stage "Installing oh-my-zsh"
@@ -207,3 +216,149 @@ if [[ -f "/home/jazev/.oh-my-zsh" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 sed_with_preview $HOME/.zshrc -E 's/ZSH_THEME="[^"]*"/ZSH_THEME="bira"/g'
+
+# Install gh
+if ! command -v gh &> /dev/null
+then
+  sub_stage "Installing gh"
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt update
+  DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+    gh
+fi
+
+# Install kvantum
+if ! command -v kvantummanager &> /dev/null
+then
+  sub_stage "Installing kvantum"
+  sudo add-apt-repository ppa:papirus/papirus
+  sudo apt update
+  DEBIAN_FRONTEND=noninteractive sudo apt-get install -y\
+    qt5-style-kvantum \
+    qt5-style-kvantum-themes
+fi
+
+# Install kvantum theme
+# From https://github.com/mkole/KDE-Plasma
+sub_stage "Installing kvantum theme"
+mkdir -p $HOME/.config/Kvantum
+cp -r $DOTFILES/resources/kvantum/BigSur-Dark $HOME/.config/Kvantum/BigSur-Dark
+kvantummanager --set BigSur-Dark
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "KDE"     --key "widgetStyle" "kvantum-dark"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "widgetStyle" "kvantum-dark"
+
+# Install color theme
+# From https://github.com/mkole/KDE-Plasma
+sub_stage "Installing color theme"
+sudo mkdir -p /usr/share/color-schemes
+sudo cp $DOTFILES/resources/colors/Big-Dark.colors /usr/share/color-schemes/Big-Dark.colors
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "ColorScheme" "Big-Dark"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "ColorScheme" "Big-Dark"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "Name"        "Big-Dark"
+
+# Configuring Desktop Effects
+sub_stage "Configuring Desktop Effects"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-Blur" --key "NoiseStrength"              "8"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "kwin4_effect_fadeEnabled"   "false"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "kwin4_effect_scaleEnabled"  "true"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "kwin4_effect_squashEnabled" "false"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "magiclampEnabled"           "true"
+
+# Install window decorations
+# From https://github.com/kupiqu/SierraBreezeEnhanced
+sub_stage "Installing window decorations"
+sudo add-apt-repository -y \
+  ppa:krisives/sierrabreezeenhanced
+sudo apt update
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y\
+  sierrabreezeenhanced
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "BorderSize"     "None"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "BorderSizeAuto" "false"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "ButtonsOnLeft"  "XIA"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "ButtonsOnRight" ""
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "library"        "org.kde.sierrabreezeenhanced"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "theme"          "Sierra Breeze Enhanced"
+touch $HOME/.config/sierrabreezeenhancedrc
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "AnimationsEnabled"     "false"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonHOffset"         "4"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonSize"            "ButtonSmall"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonSpacing"         "4"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonStyle"           "macSierra"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "CornerRadius"          "8"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "DrawTitleBarSeparator" "false"
+kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "UnisonHovering"        "false"
+kwin_x11 --replace <&- >&- 2>&- & disown
+
+# Install rounded corners
+# From https://github.com/khanhas/ShapeCorners
+sub_stage "Installing rounded corners"
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+  git \
+  cmake \
+  g++ \
+  gettext \
+  extra-cmake-modules \
+  qttools5-dev \
+  libqt5x11extras5-dev \
+  libkf5configwidgets-dev \
+  libkf5crash-dev \
+  libkf5globalaccel-dev \
+  libkf5kio-dev \
+  libkf5notifications-dev \
+  kinit-dev \
+  kwin-dev
+if [ ! -d "$HOME/opt/shape-corners" ]; then
+  mkdir -p $HOME/opt/shape-corners
+  git clone https://github.com/khanhas/ShapeCorners.git $HOME/opt/shape-corners
+fi
+mkdir -p $HOME/opt/shape-corners/build
+pushd $HOME/opt/shape-corners/build
+cmake ../ -DCMAKE_INSTALL_PREFIX=/usr -DQT5BUILD=ON
+make && sudo make install
+touch $HOME/.config/shapecornersrc
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Radius"             "10"
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Type"               "Rounded"
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "SquareAtScreenEdge" "true"
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "FilterShadow"       "false"
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Whitelist"          ""
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Blacklist"          "lattedock"
+kwin_x11 --replace <&- >&- 2>&- & disown
+popd
+
+# Install Plasma theme
+# From https://store.kde.org/p/1567587
+sub_stage "Installing Plasma theme"
+sudo mkdir -p /usr/share/plasma/desktoptheme
+sudo cp -r $DOTFILES/resources/plasma-themes/WhiteSur-dark /usr/share/plasma/desktoptheme/WhiteSur-dark
+kwriteconfig5 --file $HOME/.config/plasmarc --group "Theme" --key "name" "WhiteSur-dark"
+kquitapp5 plasmashell
+kstart5 plasmashell <&- >&- 2>&- & disown
+latte-dock --replace <&- >&- 2>&- & disown
+
+# Install Plasmoids
+sub_stage "Installing Plasmoids"
+PLASMOID_INSTALL="$HOME/.local/share/plasma/plasmoids"
+if [ ! -d "$PLASMOID_INSTALL/launchpadPlasma" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/launchpadPlasma.tar.gz
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.communia.apptitle" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/org.communia.apptitle--v1.1.org.communia.apptitle.plasmoid
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.kde.latte.separator" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/applet-latte-separator-0.1.1.plasmoid
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.kde.latte.spacer" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/applet-latte-spacer-0.3.0.plasmoid
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.kde.plasma.betterinlineclock" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/betterinlineclock.tar.gz
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.kde.plasma.bigSur-inlineBattery" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/org.kde.plasma.bigSur-inlineBattery.tar.gz
+fi
+if [ ! -d "$PLASMOID_INSTALL/org.kpple.kppleMenu" ]; then
+  plasmapkg2 --install $DOTFILES/resources/plasmoids/org.kpple.KppleMenu.tar.gz
+fi
+
+# Install Latte layout
