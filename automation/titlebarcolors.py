@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 import os
-import glob
 import sys
-import subprocess
-import shlex
 import traceback
-import json
 from configparser import ConfigParser
 from dataclasses import dataclass
-from os import path
-from typing import Optional, List, Set, Dict
+from typing import Dict
 
 
 @dataclass
