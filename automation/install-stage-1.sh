@@ -11,6 +11,15 @@ function sed_with_preview {
   sed -i "${@:2}" "$1"
 }
 
+# Runs `sed` with `diff` right before showing what the `sed` command changes
+# RUns using sudo
+# Usage:
+#   sudo_sed_with_preview [file_path] [options] [pattern]
+function sudo_sed_with_preview {
+  sed "${@:2}" "$1" | diff "$1" - || true
+  sudo sed -i "${@:2}" "$1"
+}
+
 # Delimits a sub-stage
 # Usage:
 #   sub_stage [message]
@@ -49,7 +58,11 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   python3-pip \
   build-essential \
   neofetch \
-  dolphin-plugins
+  dolphin-plugins \
+  inkscape \
+  gimp \
+  rsync \
+  flameshot
 python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 
@@ -71,6 +84,8 @@ then
   sudo apt install google-chrome-stable_current_amd64.deb
   popd
 fi
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
 
 # Install fonts
 sub_stage "Installing fonts"
@@ -102,11 +117,11 @@ sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-font-nam
 
 # Install cursors
 sub_stage "Installing cursors"
-sudo mkdir -p /usr/share/icons
-sudo cp -r $DOTFILES/resources/cursors/posy-black      /usr/share/icons/posy-black
-sudo cp -r $DOTFILES/resources/cursors/posy-black-tiny /usr/share/icons/posy-black-tiny
-sudo cp -r $DOTFILES/resources/cursors/posy-white      /usr/share/icons/posy-white
-sudo cp -r $DOTFILES/resources/cursors/posy-white-tiny /usr/share/icons/posy-white-tiny
+sudo mkdir -p /usr/share/icons/{posy-black,posy-black-tiny,posy-white,posy-white-tiny}
+sudo rsync -au --delete "$DOTFILES/resources/cursors/posy-black/"      /usr/share/icons/posy-black/
+sudo rsync -au --delete "$DOTFILES/resources/cursors/posy-black-tiny/" /usr/share/icons/posy-black-tiny/
+sudo rsync -au --delete "$DOTFILES/resources/cursors/posy-white/"      /usr/share/icons/posy-white/
+sudo rsync -au --delete "$DOTFILES/resources/cursors/posy-white-tiny/" /usr/share/icons/posy-white-tiny/
 kwriteconfig5 --file $HOME/.config/kcminputrc --group "Mouse" --key "cursorTheme" "posy-black"
 sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Gtk\/CursorThemeName "[^"]*"/Gtk\/CursorThemeName "posy-black"/g'
 sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-cursor-theme-name=.*/gtk-cursor-theme-name=posy-black/g'
@@ -162,25 +177,25 @@ rm -rf $HOME/Music
 rm -rf $HOME/Pictures
 rm -rf $HOME/Videos
 
-# Install Icons
-sub_stage "Installing Icons"
-if [ ! -d "$HOME/opt/big-sur-icon-theme" ]; then
-  mkdir -p $HOME/opt/big-sur-icon-theme
-  git clone https://github.com/yeyushengfan258/BigSur-icon-theme.git $HOME/opt/big-sur-icon-theme
-fi
-if [ ! -d "/usr/share/icons/BigSur-dark" ]; then
-  sudo mkdir -p /usr/share/icons
-  sudo $HOME/opt/big-sur-icon-theme/install.sh --name "BigSur"
-fi
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "Icons" --key "Theme" "BigSur-dark"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "Icons" --key "Theme" "BigSur-dark"
-sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Net\/IconThemeName "[^"]*"/Net\/IconThemeName "BigSur-dark"/g'
-sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=BigSur-dark/g'
-sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=BigSur-dark/g'
-sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-icon-theme-name="[^"]*"/gtk-icon-theme-name="BigSur-dark"/g'
+# Install icons
+sub_stage "Installing icons"
+sudo mkdir -p /usr/share/icons/{WhiteSur,WhiteSur-dark}
+sudo rsync -au --delete "$DOTFILES/resources/icons/WhiteSur/"      "/usr/share/icons/WhiteSur/"
+sudo rsync -au --delete "$DOTFILES/resources/icons/WhiteSur-dark/" "/usr/share/icons/WhiteSur-dark/"
+# Sync the patch folder (but do not use --delete)
+sudo rsync -au          "$DOTFILES/resources/icons/patch/" "/usr/share/icons/WhiteSur/"
+sudo rsync -au          "$DOTFILES/resources/icons/patch/" "/usr/share/icons/WhiteSur-dark/"
+kwriteconfig5 --file $HOME/.config/kdeglobals           --group "Icons" --key "Theme" "WhiteSur-dark"
+kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "Icons" --key "Theme" "WhiteSur-dark"
+sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Net\/IconThemeName "[^"]*"/Net\/IconThemeName "WhiteSur-dark"/g'
+sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=WhiteSur-dark/g'
+sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=WhiteSur-dark/g'
+sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-icon-theme-name="[^"]*"/gtk-icon-theme-name="WhiteSur-dark"/g'
+rm $HOME/.cache/icon-cache.kcache
+kbuildsycoca5 --noincremental
 
-# Install Wallpaper
-sub_stage "Installing Wallpaper"
+# Install wallpaper
+sub_stage "Installing wallpaper"
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   plasma-wallpaper-dynamic
 mkdir -p $HOME/wallpaper
@@ -204,8 +219,6 @@ if [ ! -z ${WALLPAPER_TYPE+x} ] && [ "$WALLPAPER_TYPE" == "DYNAMIC" ]; then
 else
   set_wallpaper "org.kde.image"           $HOME/wallpaper/monterey-dark.jpg
 fi
-kquitapp5 plasmashell
-kstart5 plasmashell <&- >&- 2>&- & disown
 
 # Install oh-my-zsh
 sub_stage "Installing oh-my-zsh"
@@ -242,8 +255,8 @@ fi
 # Install kvantum theme
 # From https://github.com/mkole/KDE-Plasma
 sub_stage "Installing kvantum theme"
-mkdir -p $HOME/.config/Kvantum
-cp -r $DOTFILES/resources/kvantum/BigSur-Dark $HOME/.config/Kvantum/BigSur-Dark
+mkdir -p "$HOME/.config/Kvantum/BigSur-Dark"
+sudo rsync -au --delete "$DOTFILES/resources/kvantum/BigSur-Dark/" "$HOME/.config/Kvantum/BigSur-Dark/"
 kvantummanager --set BigSur-Dark
 kwriteconfig5 --file $HOME/.config/kdeglobals           --group "KDE"     --key "widgetStyle" "kvantum-dark"
 kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "widgetStyle" "kvantum-dark"
@@ -252,13 +265,13 @@ kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key 
 # From https://github.com/mkole/KDE-Plasma
 sub_stage "Installing color theme"
 sudo mkdir -p /usr/share/color-schemes
-sudo cp $DOTFILES/resources/colors/Big-Dark.colors /usr/share/color-schemes/Big-Dark.colors
+sudo rsync -au $DOTFILES/resources/colors/Big-Dark.colors /usr/share/color-schemes/Big-Dark.colors
 kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "ColorScheme" "Big-Dark"
 kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "ColorScheme" "Big-Dark"
 kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "Name"        "Big-Dark"
 
-# Configuring Desktop Effects
-sub_stage "Configuring Desktop Effects"
+# Configuring desktop effects
+sub_stage "Configuring desktop effects"
 kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-Blur" --key "NoiseStrength"              "8"
 kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "kwin4_effect_fadeEnabled"   "false"
 kwriteconfig5 --file $HOME/.config/kwinrc --group "Plugins"     --key "kwin4_effect_scaleEnabled"  "true"
@@ -279,7 +292,6 @@ kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "
 kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "ButtonsOnRight" ""
 kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "library"        "org.kde.sierrabreezeenhanced"
 kwriteconfig5 --file $HOME/.config/kwinrc --group "org.kde.kdecoration2" --key "theme"          "Sierra Breeze Enhanced"
-touch $HOME/.config/sierrabreezeenhancedrc
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "AnimationsEnabled"     "false"
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonHOffset"         "4"
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonSize"            "ButtonSmall"
@@ -288,7 +300,13 @@ kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --ke
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "CornerRadius"          "8"
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "DrawTitleBarSeparator" "false"
 kwriteconfig5 --file $HOME/.config/sierrabreezeenhancedrc --group "Windeco" --key "UnisonHovering"        "false"
-kwin_x11 --replace <&- >&- 2>&- & disown
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "Enabled"                "true"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "DrawBackgroundGradient" "false"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "ExceptionPattern"       "konsole"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "ExceptionType"          "0"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "Mask"                   "0"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "OpacityOverride"        "41"
+kwriteconfig5 --file $HOME/.config/breezerc --group "Windeco Exception 0" --key "OpaqueTitleBar"         "false"
 
 # Install rounded corners
 # From https://github.com/khanhas/ShapeCorners
@@ -322,19 +340,15 @@ kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Type"
 kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "SquareAtScreenEdge" "true"
 kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "FilterShadow"       "false"
 kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Whitelist"          ""
-kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Blacklist"          "lattedock"
-kwin_x11 --replace <&- >&- 2>&- & disown
+kwriteconfig5 --file $HOME/.config/shapecornersrc --group "General" --key "Blacklist"          "lattedock,krunner"
 popd
 
 # Install Plasma theme
 # From https://store.kde.org/p/1567587
 sub_stage "Installing Plasma theme"
-sudo mkdir -p /usr/share/plasma/desktoptheme
-sudo cp -r $DOTFILES/resources/plasma-themes/WhiteSur-dark /usr/share/plasma/desktoptheme/WhiteSur-dark
+sudo mkdir -p /usr/share/plasma/desktoptheme/WhiteSur-dark
+sudo rsync -au --delete "$DOTFILES/resources/plasma-themes/WhiteSur-dark/" /usr/share/plasma/desktoptheme/WhiteSur-dark/
 kwriteconfig5 --file $HOME/.config/plasmarc --group "Theme" --key "name" "WhiteSur-dark"
-kquitapp5 plasmashell
-kstart5 plasmashell <&- >&- 2>&- & disown
-latte-dock --replace <&- >&- 2>&- & disown
 
 # Install Plasmoids
 sub_stage "Installing Plasmoids"
@@ -361,4 +375,91 @@ if [ ! -d "$PLASMOID_INSTALL/org.kpple.kppleMenu" ]; then
   plasmapkg2 --install $DOTFILES/resources/plasmoids/org.kpple.KppleMenu.tar.gz
 fi
 
-# Install Latte layout
+# Add space to system tray plasmoid
+sub_stage "Adding space to system tray plasmoid"
+SYSTEM_TRAY_ARROW_SPACING="6"
+SYSTEM_TRAY_ICON_MARGIN="6"
+sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/ui/main.qml 's/columnSpacing: [0-9.-]*/columnSpacing: '$SYSTEM_TRAY_ARROW_SPACING'/g'
+sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/ui/main.qml 's/return autoSize ? root.height : smallSizeCellLength/return (autoSize ? root.height : smallSizeCellLength) + '$SYSTEM_TRAY_ICON_MARGIN'/g'
+sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/ui/main.qml 's/return (autoSize ? root.height : smallSizeCellLength) + [0-9.-]*/return (autoSize ? root.height : smallSizeCellLength) + '$SYSTEM_TRAY_ICON_MARGIN'/g'
+
+# Install custom icons (for Latte)
+sub_stage "Installing custom icons"
+sudo mkdir -p /opt/icons/custom
+sudo rsync -au --delete "$DOTFILES/resources/icons/custom/" "/opt/icons/custom/"
+
+# Overriding icon on kpple menu
+sub_stage "Overriding menu on kpple menu"
+kwriteconfig5 --file $PLASMOID_INSTALL/org.kpple.kppleMenu/metadata.desktop --group "Desktop Entry" --key "Icon" "start-here-macos-adjusted"
+
+# Adding space to global menu plasmoid
+sub_stage "Adding space to global menu"
+sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.appmenu/contents/ui/main.qml 's/return text;/if (text === "") { return ""; } else { return " ".concat(text, " "); }/g'
+
+# Install prerequisites for global menu
+sub_stage "Installing global menu prerequisites"
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+  appmenu-gtk2-module \
+  appmenu-gtk3-module
+
+# Create corrected launchers for Snaps
+sub_stage "Creating corrected launchers for Snaps"
+mkdir -p $HOME/.local/share/applications
+cp /var/lib/snapd/desktop/applications/code_code.desktop             $HOME/.local/share/applications/code_code.desktop
+cp /var/lib/snapd/desktop/applications/code_code-url-handler.desktop $HOME/.local/share/applications/code_code-url-handler.desktop
+kwriteconfig5 --file $HOME/.local/share/applications/code_code.desktop             --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
+kwriteconfig5 --file $HOME/.local/share/applications/code_code-url-handler.desktop --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
+cp /var/lib/snapd/desktop/applications/discord_discord.desktop $HOME/.local/share/applications/discord_discord.desktop
+kwriteconfig5 --file $HOME/.local/share/applications/discord_discord.desktop --group "Desktop Entry" --key "Icon" "com.discordapp.Discord"
+cp /var/lib/snapd/desktop/applications/spotify_spotify.desktop $HOME/.local/share/applications/spotify_spotify.desktop
+kwriteconfig5 --file $HOME/.local/share/applications/spotify_spotify.desktop --group "Desktop Entry" --key "Icon" "com.spotify.Client"
+
+# Install Latte layout and configure
+sub_stage "Installing Latte layout"
+killall latte-dock || true
+rm -f $HOME/.config/latte/personal-docks.layout.old.latte
+if [[ -f "$dynamic_wallpaper_location" ]]; then
+  mv $HOME/.config/latte/personal-docks.layout.latte $HOME/.config/latte/personal-docks.layout.old.latte
+fi
+kwriteconfig5 --file $HOME/.config/kwinrc --group "ModifierOnlyShortcuts" --key "Meta" "org.kde.lattedock,/Latte,org.kde.LatteDock,activateLauncherMenu"
+latte-dock --import-layout $DOTFILES/resources/latte/personal-docks.layout.latte --replace <&- >&- 2>&- & disown
+
+# Configure misc settings
+sub_stage "Configuring misc settings"
+# Add programs to autostart
+mkdir -p $HOME/.config/autostart
+sudo rsync -au "$DOTFILES/resources/launchers/autostart/" "$HOME/.config/autostart/"
+# Enable night color
+kwriteconfig5 --file $HOME/.config/kwinrc --group "NightColor" --key "Active" "true"
+# Use an empty session when starting up
+kwriteconfig5 --file $HOME/.config/ksmserverrc --group "General" --key "loginMode" "emptySession"
+# Configure the task switcher
+kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "DesktopLayout"     "org.kde.breeze.desktop"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "DesktopListLayout" "org.kde.breeze.desktop"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "LayoutName"        "big_icons"
+# Disable the default screen edges actions (by setting their edge to "9")
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-PresentWindows" --key "BorderActivateAll" "9"
+kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox"                --key "BorderActivate"    "9"
+# Disable windows fading out when moving
+kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-kwin4_effect_translucency" --key "MoveResize" "100"
+
+# Configure konsole
+mkdir -p "$HOME/.local/share/konsole"
+rsync -au "$DOTFILES/resources/konsole/one-dark-glass.colorscheme" "$HOME/.local/share/konsole/one-dark-glass.colorscheme"
+rsync -au "$DOTFILES/resources/konsole/Primary.profile" "$HOME/.local/share/konsole/Primary.profile"
+kwriteconfig5 --file $HOME/.config/konsolerc --group "Desktop Entry" --key "DefaultProfile" "Primary.profile"
+
+# Add kwin rules for applications so that their titlebars match the application body
+sub_stage "Adding titlebar color kwin rules"
+COLOR_SCHEME_DEST=$(mktemp -d)
+python3 "$DOTFILES/automation/titlebarcolors.py" \
+  --kwinrulesrc "$HOME/.config/kwinrulesrc" \
+  --template "$DOTFILES/automation/titlebar-template.colors" \
+  --color-scheme-dest "$COLOR_SCHEME_DEST"
+rsync -au "$COLOR_SCHEME_DEST/" "$HOME/.local/share/color-schemes/"
+
+# Restart KDE (and related processes)
+sub_stage "Restarting KDE"
+kquitapp5 plasmashell
+kstart5 plasmashell <&- >&- 2>&- & disown
+kwin_x11 --replace <&- >&- 2>&- & disown

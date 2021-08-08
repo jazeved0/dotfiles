@@ -66,29 +66,11 @@ code /tmp/dotfiles-install-user-places.snippet.xbel
 
 Then, replace the corresponding section in the `~/.local/share/user-places.xbel` file with the snippet in the temp folder.
 
-#### Docks
-
-First, install latte-dock:
-
-```sh
-sudo apt install latte-dock
-```
-
-Then, create a new Layout called `PersonalDocks`.
-
-From here, modify the following settings on the default dock:
-
-- TODO add
-
 #### TODO
 
 - Figure out how to get rid of dumb blue + corner + shadow situation
-- Fix launcher shortcuts
-- Fix launcher icon resolutions
-- Add some specific icon overrides
-- Add config for task switcher/virtual desktops
-- Add actual instructions to Docks, configure to look good and include all third party widgets
 - Add login screen theming/KDE loading screen theming
  - Include syncing settings
-- Add konsole configuration
+- Investigate boot times
 - Add various development toolchains
+- TODO does night color work in day time (like not actually activating it)
