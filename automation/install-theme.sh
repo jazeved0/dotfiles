@@ -58,8 +58,6 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   flameshot \
   xsel \
   git
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
 
 # Install ocs-url
 if ! command -v ocs-url &> /dev/null
@@ -159,10 +157,15 @@ sub_stage "Installing oh-my-zsh"
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   zsh
 sudo chsh -s $(which zsh) $USER
-if [[ -f "/home/jazev/.oh-my-zsh" ]]; then
+if [ ! -d "/home/$HOME/.oh-my-zsh" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 sed_with_preview $HOME/.zshrc -E 's/ZSH_THEME="[^"]*"/ZSH_THEME="bira"/g'
+
+# Add python packages to path
+sub_stage "Adding python packages to path"
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
 
 # Install kvantum
 if ! command -v kvantummanager &> /dev/null
@@ -300,7 +303,7 @@ fi
 
 # Add space to system tray plasmoid
 sub_stage "Adding space to system tray plasmoid"
-SYSTEM_TRAY_ARROW_SPACING="6"
+SYSTEM_TRAY_ARROW_SPACING="4"
 SYSTEM_TRAY_ICON_MARGIN="6"
 sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/ui/main.qml 's/columnSpacing: [0-9.-]*/columnSpacing: '$SYSTEM_TRAY_ARROW_SPACING'/g'
 sudo_sed_with_preview /usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/ui/main.qml 's/return autoSize ? root.height : smallSizeCellLength/return (autoSize ? root.height : smallSizeCellLength) + '$SYSTEM_TRAY_ICON_MARGIN'/g'

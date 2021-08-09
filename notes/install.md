@@ -11,9 +11,9 @@ sudo apt install git
 git config --global user.name "Joseph Azevedo"
 git config --global user.email "joseph.az@gatech.edu"
 git clone https://github.com/jazevedo620/dotfiles.git ~/dev/dotfiles
-~/dev/dotfiles/install-theme.sh
-~/dev/dotfiles/install-apps.sh
-~/dev/dotfiles/install-settings.sh
+~/dev/dotfiles/automation/install-theme.sh
+~/dev/dotfiles/automation/install-apps.sh
+~/dev/dotfiles/automation/install-settings.sh
 ```
 
 ### 2. Increase Swap space
