@@ -116,15 +116,16 @@ sudo mkdir -p /usr/share/icons/{WhiteSur,WhiteSur-dark}
 sudo rsync -au --delete "$DOTFILES/resources/icons/WhiteSur/"      "/usr/share/icons/WhiteSur/"
 sudo rsync -au --delete "$DOTFILES/resources/icons/WhiteSur-dark/" "/usr/share/icons/WhiteSur-dark/"
 # Sync the patch folder (but do not use --delete)
-sudo rsync -au          "$DOTFILES/resources/icons/patch/" "/usr/share/icons/WhiteSur/"
-sudo rsync -au          "$DOTFILES/resources/icons/patch/" "/usr/share/icons/WhiteSur-dark/"
+sudo rsync -au          "$DOTFILES/resources/icons/patch/places/" "/usr/share/icons/WhiteSur/places/"
+sudo rsync -au          "$DOTFILES/resources/icons/patch/places/" "/usr/share/icons/WhiteSur-dark/places/"
+sudo rsync -au          "$DOTFILES/resources/icons/patch/apps/"   "/usr/share/icons/WhiteSur/apps/"
 kwriteconfig5 --file $HOME/.config/kdeglobals           --group "Icons" --key "Theme" "WhiteSur-dark"
 kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "Icons" --key "Theme" "WhiteSur-dark"
 sed_with_preview     $HOME/.config/xsettingsd/xsettingsd.conf -E 's/Net\/IconThemeName "[^"]*"/Net\/IconThemeName "WhiteSur-dark"/g'
 sed_with_preview     $HOME/.config/gtk-3.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=WhiteSur-dark/g'
 sed_with_preview     $HOME/.config/gtk-4.0/settings.ini       -E 's/gtk-icon-theme-name=.*/gtk-icon-theme-name=WhiteSur-dark/g'
 sed_with_preview     $HOME/.gtkrc-2.0                         -E 's/gtk-icon-theme-name="[^"]*"/gtk-icon-theme-name="WhiteSur-dark"/g'
-rm $HOME/.cache/icon-cache.kcache
+rm -f $HOME/.cache/icon-cache.kcache
 kbuildsycoca5 --noincremental
 
 # Install wallpaper
@@ -347,7 +348,7 @@ python3 "$DOTFILES/automation/titlebarcolors.py" \
   --kwinrulesrc "$HOME/.config/kwinrulesrc" \
   --template "$DOTFILES/automation/titlebar-template.colors" \
   --color-scheme-dest "$COLOR_SCHEME_DEST"
-rsync -au "$COLOR_SCHEME_DEST/" "$HOME/.local/share/coloru-schemes/"
+rsync -au "$COLOR_SCHEME_DEST/" "$HOME/.local/share/color-schemes/"
 
 # Configure login screen
 sub_stage "Configuring login screen"

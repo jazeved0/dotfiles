@@ -26,6 +26,7 @@ RULES = {
   "inkscape": WindowRule(color="#242424", dark=True, window_class="inkscape"),
   "discord": WindowRule(color="#36393f", dark=True, window_class="discord"),
   "konsole": WindowRule(color="#1F2229", dark=True, window_class="konsole"),
+  "vmware": WindowRule(color="#393f3f", dark=True, window_class="vmware"),
 }
 
 DARK_ACTIVE_TEXT_COLOR="222,222,222"
@@ -52,6 +53,8 @@ def main(kwinrulesrc: str,
     # Parse & update the kwinrulesrc file
     parsed_rules = parse_kwinrulesrc(kwinrulesrc_contents)
     updated_rules = update_kwinrulesrc(parsed_rules, rules)
+    if os.path.exists(kwinrulesrc):
+      os.remove(kwinrulesrc)
     with open(kwinrulesrc, 'w') as kwinrulesrc_file:
       updated_rules.write(kwinrulesrc_file)
 
@@ -74,7 +77,6 @@ def section_to_dict(file: ConfigParser, section_name: str) -> Dict[str, str]:
 
 def update_kwinrulesrc(file: ConfigParser, rules: Dict[str, WindowRule]) -> ConfigParser:
   numeric_section_headers = [section for section in file.sections() if section.isnumeric()]
-  count = len(numeric_section_headers)
 
   # Match the sections to see already-existing rendered rules
   unmatched = []
