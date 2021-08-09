@@ -26,7 +26,7 @@ then
   sub_stage "Installing Google Chrome"
   sudo mkdir -p /opt/google-chrome
   pushd /opt/google-chrome
-  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   sudo apt install google-chrome-stable_current_amd64.deb
   popd
 fi

@@ -171,7 +171,7 @@ python3 -m pipx ensurepath
 if ! command -v kvantummanager &> /dev/null
 then
   sub_stage "Installing kvantum"
-  sudo add-apt-repository ppa:papirus/papirus
+  sudo add-apt-repository -y ppa:papirus/papirus
   sudo apt update
   DEBIAN_FRONTEND=noninteractive sudo apt-get install -y\
     qt5-style-kvantum \
@@ -330,6 +330,8 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
 
 # Install Latte layout and configure
 sub_stage "Installing Latte layout"
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+  latte-dock
 killall latte-dock || true
 rm -f $HOME/.config/latte/personal-docks.layout.old.latte
 if [[ -f "$dynamic_wallpaper_location" ]]; then
