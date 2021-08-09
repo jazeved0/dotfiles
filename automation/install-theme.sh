@@ -334,7 +334,7 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   latte-dock
 killall latte-dock || true
 rm -f $HOME/.config/latte/personal-docks.layout.old.latte
-if [[ -f "$dynamic_wallpaper_location" ]]; then
+if [[ -f "$HOME/.config/latte/personal-docks.layout.latte" ]]; then
   mv $HOME/.config/latte/personal-docks.layout.latte $HOME/.config/latte/personal-docks.layout.old.latte
 fi
 kwriteconfig5 --file $HOME/.config/kwinrc --group "ModifierOnlyShortcuts" --key "Meta" "org.kde.lattedock,/Latte,org.kde.LatteDock,activateLauncherMenu"
