@@ -62,8 +62,8 @@ code ~/.ssh/id/ed25519.pub
 Run the following commands to copy the replacement snippet to the clipboard and open the relevant file in VS Code:
 
 ```sh
-sed "s/jazev/$USER/g" "$HOME/dev/dotfiles/resources/config/user-places.snippet.xbel" | xsel -ib
-code $HOME/.local/share/user-places.xbel
+sed "s/jazev/$USER/g" "$HOME"/dev/dotfiles/resources/config/user-places.snippet.xbel | xsel -ib
+code "$HOME"/.local/share/user-places.xbel
 ```
 
 Replace the corresponding section in the `~/.local/share/user-places.xbel` file with the snippet on the clipboard.

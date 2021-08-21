@@ -10,43 +10,39 @@ function sub_stage {
   echo "=============================================="
 }
 
+# Moves a user directory
+# Usage:
+#   set_user_dir [old_path] [new_path] [XDG_folder_type]
+function set_user_dir {
+  echo "Moving folder '$1' (of type '$3') to '$2'"
+  xdg-user-dirs-update --set "$3" "$2"
+  if [ -d "$1" ]; then
+    rsync -au "$1/" "$2/"
+    rm -rf "$1"
+  fi
+}
+
 # Set home sub-folders
 sub_stage "Setting home sub-folders"
-mkdir -p $HOME/desktop
-mkdir -p $HOME/downloads
-mkdir -p $HOME/templates
-mkdir -p $HOME/public
-mkdir -p $HOME/documents
-mkdir -p $HOME/music
-mkdir -p $HOME/pictures
-mkdir -p $HOME/videos
-xdg-user-dirs-update --set DESKTOP $HOME/desktop
-xdg-user-dirs-update --set DOWNLOAD $HOME/downloads
-xdg-user-dirs-update --set TEMPLATES $HOME/templates
-xdg-user-dirs-update --set PUBLICSHARE $HOME/public
-xdg-user-dirs-update --set DOCUMENTS $HOME/documents
-xdg-user-dirs-update --set MUSIC $HOME/music
-xdg-user-dirs-update --set PICTURES $HOME/pictures
-xdg-user-dirs-update --set VIDEOS $HOME/videos
-rm -rf $HOME/Desktop
-rm -rf $HOME/Downloads
-rm -rf $HOME/Templates
-rm -rf $HOME/Public
-rm -rf $HOME/Documents
-rm -rf $HOME/Music
-rm -rf $HOME/Pictures
-rm -rf $HOME/Videos
+set_user_dir "$HOME"/Desktop   "$HOME"/desktop   DESKTOP
+set_user_dir "$HOME"/Downloads "$HOME"/downloads DOWNLOADS
+set_user_dir "$HOME"/Templates "$HOME"/templates TEMPLATES
+set_user_dir "$HOME"/Public    "$HOME"/public    PUBLICSHARE
+set_user_dir "$HOME"/Documents "$HOME"/documents DOCUMENTS
+set_user_dir "$HOME"/Music     "$HOME"/music     MUSIC
+set_user_dir "$HOME"/Pictures  "$HOME"/pictures  PICTURES
+set_user_dir "$HOME"/Videos    "$HOME"/videos    VIDEOS
 
 # Configure misc settings
 sub_stage "Configuring misc settings"
 # Use an empty session when starting up
-kwriteconfig5 --file $HOME/.config/ksmserverrc --group "General" --key "loginMode" "emptySession"
+kwriteconfig5 --file "$HOME"/.config/ksmserverrc --group "General"                          --key "loginMode" "emptySession"
 # Configure the task switcher
-kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "DesktopLayout"     "org.kde.breeze.desktop"
-kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "DesktopListLayout" "org.kde.breeze.desktop"
-kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox" --key "LayoutName"        "big_icons"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "TabBox"                           --key "DesktopLayout"     "org.kde.breeze.desktop"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "TabBox"                           --key "DesktopListLayout" "org.kde.breeze.desktop"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "TabBox"                           --key "LayoutName"        "big_icons"
 # Disable the default screen edges actions (by setting their edge to "9")
-kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-PresentWindows" --key "BorderActivateAll" "9"
-kwriteconfig5 --file $HOME/.config/kwinrc --group "TabBox"                --key "BorderActivate"    "9"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "Effect-PresentWindows"            --key "BorderActivateAll" "9"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "TabBox"                           --key "BorderActivate"    "9"
 # Disable windows fading out when moving
-kwriteconfig5 --file $HOME/.config/kwinrc --group "Effect-kwin4_effect_translucency" --key "MoveResize" "100"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "Effect-kwin4_effect_translucency" --key "MoveResize" "100"

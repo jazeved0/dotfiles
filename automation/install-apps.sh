@@ -30,8 +30,8 @@ then
   sudo apt install google-chrome-stable_current_amd64.deb
   popd
 fi
-kwriteconfig5 --file $HOME/.config/kdeglobals           --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
-kwriteconfig5 --file $HOME/.kde/share/config/kdeglobals --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
+kwriteconfig5 --file "$HOME"/.config/kdeglobals           --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
+kwriteconfig5 --file "$HOME"/.kde/share/config/kdeglobals --group "General" --key "BrowserApplication[\$e]" "!google-chrome"
 
 # Install Discord
 if ! command -v discord &> /dev/null
@@ -68,18 +68,18 @@ fi
 
 # Create corrected launchers for Snaps
 sub_stage "Creating corrected launchers for Snaps"
-mkdir -p $HOME/.local/share/applications
-cp /var/lib/snapd/desktop/applications/code_code.desktop             $HOME/.local/share/applications/code_code.desktop
-cp /var/lib/snapd/desktop/applications/code_code-url-handler.desktop $HOME/.local/share/applications/code_code-url-handler.desktop
-kwriteconfig5 --file $HOME/.local/share/applications/code_code.desktop             --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
-kwriteconfig5 --file $HOME/.local/share/applications/code_code-url-handler.desktop --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
-cp /var/lib/snapd/desktop/applications/discord_discord.desktop $HOME/.local/share/applications/discord_discord.desktop
-kwriteconfig5 --file $HOME/.local/share/applications/discord_discord.desktop --group "Desktop Entry" --key "Icon" "com.discordapp.Discord"
-cp /var/lib/snapd/desktop/applications/spotify_spotify.desktop $HOME/.local/share/applications/spotify_spotify.desktop
-kwriteconfig5 --file $HOME/.local/share/applications/spotify_spotify.desktop --group "Desktop Entry" --key "Icon" "com.spotify.Client"
+mkdir -p "$HOME"/.local/share/applications
+cp /var/lib/snapd/desktop/applications/code_code.desktop             "$HOME"/.local/share/applications/code_code.desktop
+cp /var/lib/snapd/desktop/applications/code_code-url-handler.desktop "$HOME"/.local/share/applications/code_code-url-handler.desktop
+kwriteconfig5 --file "$HOME"/.local/share/applications/code_code.desktop             --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
+kwriteconfig5 --file "$HOME"/.local/share/applications/code_code-url-handler.desktop --group "Desktop Entry" --key "Icon" "com.visualstudio.code"
+cp /var/lib/snapd/desktop/applications/discord_discord.desktop "$HOME"/.local/share/applications/discord_discord.desktop
+kwriteconfig5 --file "$HOME"/.local/share/applications/discord_discord.desktop --group "Desktop Entry" --key "Icon" "com.discordapp.Discord"
+cp /var/lib/snapd/desktop/applications/spotify_spotify.desktop "$HOME"/.local/share/applications/spotify_spotify.desktop
+kwriteconfig5 --file "$HOME"/.local/share/applications/spotify_spotify.desktop --group "Desktop Entry" --key "Icon" "com.spotify.Client"
 
 # Configure misc settings
 sub_stage "Configuring misc settings"
 # Add programs to autostart
-mkdir -p $HOME/.config/autostart
-sudo rsync -au "$DOTFILES/resources/launchers/autostart/" "$HOME/.config/autostart/"
+mkdir -p "$HOME"/.config/autostart
+sudo rsync -au "$DOTFILES"/resources/launchers/autostart/ "$HOME"/.config/autostart/
