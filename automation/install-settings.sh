@@ -14,9 +14,9 @@ function sub_stage {
 # Usage:
 #   set_user_dir [old_path] [new_path] [XDG_folder_type]
 function set_user_dir {
-  echo "Moving folder '$1' (of type '$3') to '$2'"
   xdg-user-dirs-update --set "$3" "$2"
   if [ -d "$1" ]; then
+    echo "Moving folder '$1' (of type '$3') to '$2'"
     rsync -au "$1/" "$2/"
     rm -rf "$1"
   fi

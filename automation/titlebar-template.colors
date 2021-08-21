@@ -107,6 +107,6 @@ contrast=4
 activeBackground={:color}
 activeBlend=171,171,171
 activeForeground={:active_text_color}
-inactiveBackground={:color}
+inactiveBackground={:inactive_color}
 inactiveBlend=85,85,85
 inactiveForeground={:inactive_text_color}

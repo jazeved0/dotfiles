@@ -212,7 +212,7 @@ function download_catalina_dynamic {
   wget https://jazev-static-files.s3.amazonaws.com/catalina-dynamic.heic -P "$HOME"/wallpaper
 }
 download_catalina_dynamic
-if [ ! -z ${WALLPAPER_TYPE+x} ] && [ "$WALLPAPER_TYPE" == "DYNAMIC" ]; then
+if [[ -n ${WALLPAPER_TYPE+x} ]] && [ "$WALLPAPER_TYPE" == "DYNAMIC" ]; then
   set_wallpaper "com.github.zzag.dynamic" "$HOME"/wallpaper/catalina-dynamic.heic
 else
   set_wallpaper "org.kde.image"           "$HOME"/wallpaper/monterey-dark.jpg
@@ -223,7 +223,7 @@ sub_stage "Installing oh-my-zsh"
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
   zsh
 sudo chsh -s "$(which zsh)" "$USER"
-if [ ! -d "/home/$HOME/.oh-my-zsh" ]; then
+if [[ ! -d "/home/$USER/.oh-my-zsh" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 sed_with_preview "$HOME"/.zshrc -E 's/ZSH_THEME="[^"]*"/ZSH_THEME="bira"/g'
@@ -291,7 +291,7 @@ kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --
 kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --key "ButtonStyle"           "macSierra"
 kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --key "CornerRadius"          "8"
 kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --key "DrawTitleBarSeparator" "false"
-kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --key "UnisonHovering"        "false"
+kwriteconfig5 --file "$HOME"/.config/sierrabreezeenhancedrc --group "Windeco" --key "UnisonHovering"        "true"
 kwriteconfig5 --file "$HOME"/.config/breezerc --group "Windeco Exception 0" --key "Enabled"                "true"
 kwriteconfig5 --file "$HOME"/.config/breezerc --group "Windeco Exception 0" --key "DrawBackgroundGradient" "false"
 kwriteconfig5 --file "$HOME"/.config/breezerc --group "Windeco Exception 0" --key "ExceptionPattern"       "konsole"
@@ -403,7 +403,8 @@ rm -f "$HOME"/.config/latte/personal-docks.layout.old.latte
 if [[ -f "$HOME/.config/latte/personal-docks.layout.latte" ]]; then
   mv "$HOME"/.config/latte/personal-docks.layout.latte "$HOME"/.config/latte/personal-docks.layout.old.latte
 fi
-kwriteconfig5 --file "$HOME"/.config/kwinrc --group "ModifierOnlyShortcuts" --key "Meta" "org.kde.lattedock,/Latte,org.kde.LatteDock,activateLauncherMenu"
+kwriteconfig5 --file "$HOME"/.config/kwinrc      --group "ModifierOnlyShortcuts" --key "Meta"          "org.kde.lattedock,/Latte,org.kde.LatteDock,activateLauncherMenu"
+kwriteconfig5 --file "$HOME"/.config/lattedockrc --group "UniversalSettingsy"    --key "currentLayout" "personal-docks"
 latte-dock --import-layout "$DOTFILES"/resources/latte/personal-docks.layout.latte --replace <&- >&- 2>&- & disown
 
 # Configure konsole

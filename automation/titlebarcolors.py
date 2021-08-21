@@ -5,7 +5,7 @@ import sys
 import traceback
 from configparser import ConfigParser
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 
 @dataclass
@@ -13,20 +13,23 @@ class WindowRule:
   color: str
   dark: bool
   window_class: str
+  inactive_color: Optional[str] = None
 
 
 # All custom titlebar rules
 RULES = {
-  "vscode": WindowRule(color="#21252b", dark=True, window_class="code"),
+  # "vscode": WindowRule(color="#21252b", dark=True, window_class="code"), # OneDark Pro
+  "vscode": WindowRule(color="#1e2030", dark=True, window_class="code"), # Moonlight II
   "gimp": WindowRule(color="#454545", dark=True, window_class="gimp"),
-  "chrome": WindowRule(color="#242424", dark=True, window_class="google-chrome"),
+  "chrome": WindowRule(color="#202124", inactive_color="3c4043", dark=True, window_class="google-chrome"),
   "spotify": WindowRule(color="#000000", dark=True, window_class="spotify"),
   "settings": WindowRule(color="#242424", dark=True, window_class="systemsettings"),
   "dolphin": WindowRule(color="#2c2f2f", dark=True, window_class="dolphin"),
   "inkscape": WindowRule(color="#242424", dark=True, window_class="inkscape"),
   "discord": WindowRule(color="#36393f", dark=True, window_class="discord"),
-  "konsole": WindowRule(color="#1F2229", dark=True, window_class="konsole"),
+  "konsole": WindowRule(color="#282C34", dark=True, window_class="konsole"),
   "vmware": WindowRule(color="#393f3f", dark=True, window_class="vmware"),
+  "slack": WindowRule(color="#1f2a42", inactive_color="282f3f", dark=True, window_class="slack"), # Mood Indigo dark
 }
 
 DARK_ACTIVE_TEXT_COLOR="222,222,222"
@@ -128,15 +131,22 @@ def render_rule(file: ConfigParser, section: str, name: str, rule: WindowRule):
   }
 
 
+def convert_color(color_hex: str) -> str:
+    without_pound = color_hex.removeprefix("#")
+    r_hex, g_hex, b_hex = without_pound[0:2], without_pound[2:4], without_pound[4:6]
+    r, g, b = int(r_hex, base=16), int(g_hex, base=16), int(b_hex, base=16)
+    return f"{r},{g},{b}"
+
+
 def render_color_schemes(rules: Dict[str, WindowRule], template_contents: str) -> Dict[str, str]:
   rendered = {}
   for key, rule in rules.items():
-    without_pound = rule.color.removeprefix("#")
-    r_hex, g_hex, b_hex = without_pound[0:2], without_pound[2:4], without_pound[4:6]
-    r, g, b = int(r_hex, base=16), int(g_hex, base=16), int(b_hex, base=16)
+    active_color = convert_color(rule.color)
+    inactive_color = convert_color(rule.inactive_color) if rule.inactive_color else active_color
     rendered[f"titlebar-{key}.colors"] = (template_contents
       .replace("{:name}", f"titlebar-{key}")
-      .replace("{:color}", f"{r},{g},{b}")
+      .replace("{:color}", active_color)
+      .replace("{:inactive_color}", inactive_color)
       .replace("{:active_text_color}", DARK_ACTIVE_TEXT_COLOR if rule.dark else LIGHT_ACTIVE_TEXT_COLOR)
       .replace("{:inactive_text_color}", DARK_INACTIVE_TEXT_COLOR if rule.dark else LIGHT_INACTIVE_TEXT_COLOR)
     )
